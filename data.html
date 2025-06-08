@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Data Lookup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            color: white;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s ease-in-out;
+        }
+        input {
+            width: 250px;
+            font-size: 16px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        button {
+            background-color: #ff4e50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            background-color: #fc913a;
+            transform: scale(1.1);
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            transition: opacity 0.5s ease-in-out;
+        }
+        a {
+            color: yellow;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+            display: inline-block;
+            transition: transform 0.3s;
+        }
+        a:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+    <h2>Students Results</h2>
+    <input type="text" id="rollNumber" placeholder="Enter Roll Number">
+    <button onclick="getStudentData()">Get Data</button>
+    <p id="result"></p>
+    
+    <script>
+        const studentData = {
+            "22F11A0501": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2Mzcy",
+            "502": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MjA4",
+            "503": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MzA4",
+            "504": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2Mzc3",
+            "505": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MjM4",
+            "506": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MDMz",
+            "508": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MjMw",
+            "509": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2NDY0",
+            "510": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2Mzg1",
+            "511": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MzM1",
+            "512": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MTY2",
+            "513": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MzQ0",
+            "515": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MzAz",
+            "516": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MTE5",
+            "517": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2NDg5",
+            "519": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MDUw",
+            "520": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2Mzky",
+            "521": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MTcz",
+            "522": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MDQ4",
+            "523": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MDM1",
+            "524": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2NDk5",
+            "525": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2NDg3",
+            "526": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MTE3",
+            "527": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2NDAx",
+            "528": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MzIz",
+            "529": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MjM4",
+            "530": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MTM2",
+            "531": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MDI1",
+            "532": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MDEz",
+            "533": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MTk5",
+            "535": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MTIw",
+            "536": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MzA0",
+            "537": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MTk1",
+            "538": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MzE3",
+            "539": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MDQy",
+            "540": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MTU1",
+            "541": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MzM0",
+            "543": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2NDE5",
+            "544": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2NDU5",
+            "545": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2Mjg5",
+            "546": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MDM3",
+            "547": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MTI5",
+            "549": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MTgy",
+            "550": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2NDI5",
+            "551": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2NDM1",
+            "552": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MzY4",
+            "553": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MDQz",
+            "554": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MDMy",
+            "555": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2NDM2",
+            "556": "https://esc.ibomma.day/telugu-movies/",
+            "557": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MDU4",
+            "558": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MjA1",
+            "559": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MTE0",
+            "560": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2NDQy",
+            "561": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MDE1",
+            "562": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MjA3",
+            "564": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2NDUw",
+            "565": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2NDUy",
+            "566": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2NDU1",
+            "23F15A0501": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMzA5MDI2MzY3",
+            "23F15A0502": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMzA5MDI2MzEz",
+            "23F15A0503": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMzA5MDI2MzEx",
+            "23F15A0504": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MjA3",
+            "23F15A0505": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMzA5MDI2MzEy",
+            "23F15A0506": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMzA5MDI2MzEw",
+            "23F15A0507": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMzA5MDI2MzQy",
+            "5B7": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MjE1",
+            "5C9": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MjE2",
+            "577": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MjIw",
+            "5B6": "https://narayanagroup.co.in/patient/EngAutonomousReport.aspx/MjAyMjA5MDI2MjM1",
+        };
+
+        function getStudentData() {
+            const rollNumber = document.getElementById('rollNumber').value;
+            const resultElement = document.getElementById('result');
+            
+            if (studentData[rollNumber]) {
+                window.location.href = studentData[rollNumber]; 
+            } else {
+                resultElement.style.opacity = 0;
+                setTimeout(() => {
+                    resultElement.innerHTML = "Roll number not found.";
+                    resultElement.style.opacity = 1;
+                }, 300);
+            }
+        }
+    </script>
+</body>
+</html>
